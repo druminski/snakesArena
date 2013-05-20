@@ -1,0 +1,82 @@
+/* CSS declarations go here */
+html {
+    height: 100%;
+}
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+#snakesArena {
+    background-color: #D6DFb2;
+    border: 1px solid #D4D4D4;
+    border-radius: 4px;
+    float: left;
+}​
+
+#snakesArena:focus{
+    border-color: rgba(82, 168, 236, 0.8);
+    outline: 0;
+    outline: thin dotted \9;
+    /* IE6-9 */
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+
+.customWidth {
+    width: 120px !important;
+}
+
+input[type="submit"]#btnJoinToRoom {
+    width: 140px !important;
+}
+
+.menus {
+    border: 1px solid #D4D4D4;
+    border-radius: 4px;
+    padding-left: 5px;
+}
+
+.border {
+    border: 1px solid rgb(255, 0, 0);
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.content {
+    float: left;
+}
+
+.footer {
+    width: 100%;
+    float : left;
+}
+
+.navbar-innermy {
+    min-height: 40px;
+    padding-right: 20px;
+    padding-left: 20px;
+    background-color: #FAFAFA;
+    background-image: -moz-linear-gradient(top, white, #F2F2F2);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(white), to(#F2F2F2));
+    background-image: -webkit-linear-gradient(top, white, #F2F2F2);
+    background-image: -o-linear-gradient(top, white, #F2F2F2);
+    background-image: linear-gradient(to bottom, white, #F2F2F2);
+    background-repeat: repeat-x;
+    border: 1px solid #D4D4D4;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#fff2f2f2', GradientType=0);
+    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
+    -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
+}
+
+
+

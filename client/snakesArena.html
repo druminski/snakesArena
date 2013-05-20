@@ -1,0 +1,49 @@
+<head>
+    <title>Snakes Arena</title>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="top">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="brand pagination-centered">Welcome to Snakes Arena</div>
+                {{> room}}
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        {{> arena}}
+    </div>
+    {{> menus}}
+    <div class="footer">
+        Footer
+    </div>
+</div>
+
+</body>
+
+<template name="arena">
+    <canvas id="snakesArena" width="{{arenaWidth}}" height="{{arenaHeight}}" tabindex="1"></canvas>
+</template>
+
+<template name="menus">
+    <div class="menus" style="{{menusStyle}}">
+        <div class="menu">
+            <div class="title navbar">
+                <div class="navbar-innermy">
+                    <div class="brand pagination-centered">Room</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template name="room">
+    <div class="navbar-form pull-right">
+        <input type="text" id="txtNickname" class="span2" placeholder="Type nickname">
+        <input type="submit" id="btnJoinToRoom" class="btn btn-primary" value="Join to the game">
+        <input type="submit" id="btnReadyToPlay" class="btn btn-success disabled" value="Play">
+    </div>
+</template>

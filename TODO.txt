@@ -1,0 +1,33 @@
+Uwagi:
+
+-dzieki auto przeladowaniom prace jest wygodniejsza, nawet serwera nie trzeba restartować w przypadku zmian
+-brak modelu z czasem może stać się problematyczny.
+-obsluga platformy jest prosta: instalacja, pakiety
+-jak dziala wypychanie danych do przegladarki klienta: http://stackoverflow.com/questions/10103470/how-does-meteor-update-the-browser
+-Meteor.connect zapowiada sie obiecująco
+-rzuć okiem na roadmap
+
+//TODO
+done time powinien zostac wylaczony jesli uzytkownik opusci strone
+done client powinien reagowac jesli polaczenie z serwerem zostanie zerwane
+done teleport dla wezy
+done kolizje
+done owoce
+done kolory dla wezy
+done porozrzucac kod do plikow
+
+obsluzyc koniec zyc
+ograniczyc maksymalna ilosc graczy w pokoju
+punktcja
+urposcic funkcje sprawdzajaca czy punkt jest na linii
+dodac panel informacyjny
+baner http://madewith.meteor.com/
+formularz do zakładania pokoi
+link do zaproszenia znajomego do pokoju
+wylaczyc debug
+unikalne nazwy uzytkownikow, albo uwiezytelnianie?
+
+//BUGS
+gdy klient wiele razy utworzy pokoj i go opusci, to gra zaczyna przycinac, a procek sie zazyna - zdebugowac kolekcje
+waz nie powinien moc zjesc wlasnego ogona
+TypeError: Cannot read property 'snakes' of undefined - kiedy user wyjdzie, a iteracja bedzie w trakcie wykonywania - weryfikowac czy zostal znaleziony dokument?
