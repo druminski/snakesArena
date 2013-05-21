@@ -2,13 +2,17 @@ DISTANCE_BETWEEN_SNAKES_AT_START = 5;
 
 moveSnakesPositions = function(snakes) {
     for (var snakeIndex=0; snakeIndex < snakes.length; snakeIndex++) {
-        snakes[snakeIndex] = getSnakeWithNewPosition(snakes[snakeIndex]);
+        if (isSnakePlaying(snakes[snakeIndex])) {
+            snakes[snakeIndex] = getSnakeWithNewPosition(snakes[snakeIndex]);
+        }
     }
 }
 
 handleCollisions = function(snakes) {
     for (var snakeIndex=0; snakeIndex < snakes.length; snakeIndex++) {
-        snakes[snakeIndex].isSnakeInCollision = isSnakeInCollision(snakeIndex, snakes);
+        if (isSnakePlaying(snakes[snakeIndex])) {
+            snakes[snakeIndex].isSnakeInCollision = isSnakeInCollision(snakeIndex, snakes);
+        }
     }
 
     for (var snakeIndex=0; snakeIndex < snakes.length; snakeIndex++) {
@@ -21,7 +25,7 @@ handleCollisions = function(snakes) {
 
 handleTeleport = function(snakes) {
     for (var snakeIndex=0; snakeIndex < snakes.length; snakeIndex++) {
-        if (isSnakeHittingIntoWall(getHead(snakes[snakeIndex].body))) {
+        if (isSnakePlaying(snakes[snakeIndex]) && isSnakeHittingIntoWall(getHead(snakes[snakeIndex].body))) {
             Meteor._debug("wall");
             snakes[snakeIndex].body = getTeleportedBodyOfSnake(snakes[snakeIndex].body);
         }
@@ -29,18 +33,18 @@ handleTeleport = function(snakes) {
 }
 
 handleFruits = function(room, snakes) {
-    var fruitWasEated=false;
+    var fruitWasEaten=false;
 
     for (var snakeIndex=0; snakeIndex < snakes.length; snakeIndex++) {
-        if (isSnakeEatingFruit(snakes[snakeIndex], room.fruit)) {
+        if (isSnakePlaying(snakes[snakeIndex]) && isSnakeEatingFruit(snakes[snakeIndex], room.fruit)) {
             var howManyElementsAddToTail = 3;
             Meteor._debug("fruit");
             snakes[snakeIndex] = getSnakeWithMovedTailPosition(snakes[snakeIndex], howManyElementsAddToTail);
-            fruitWasEated = true;
+            fruitWasEaten = true;
         }
     }
 
-    if (fruitWasEated) {
+    if (fruitWasEaten) {
         room.fruit = getRandomPosition(MAX_ARENA_COLUMNS, MAX_ARENA_ROWS);
     }
 }
@@ -73,9 +77,11 @@ var getSnakeWithHandledCollision = function(snake, snakeIndex) {
     snake.direction = DIRECTION.UP;
     snake.newDirection = DIRECTION.UP;
     snake.body.length = 0;
-    snake.body.push(
-        {posX : snakeIndex*DISTANCE_BETWEEN_SNAKES_AT_START + DISTANCE_BETWEEN_SNAKES_AT_START, posY : 28},
-        {posX : snakeIndex*DISTANCE_BETWEEN_SNAKES_AT_START + DISTANCE_BETWEEN_SNAKES_AT_START, posY : 20});
+    if (snake.lives > 0) {
+        snake.body.push(
+            {posX : snakeIndex*DISTANCE_BETWEEN_SNAKES_AT_START + DISTANCE_BETWEEN_SNAKES_AT_START, posY : 28},
+            {posX : snakeIndex*DISTANCE_BETWEEN_SNAKES_AT_START + DISTANCE_BETWEEN_SNAKES_AT_START, posY : 20});
+    }
 
     return snake;
 }
@@ -197,6 +203,15 @@ var getSnakeWithNewPosition = function(snake) {
     snake = getSnakeWithNewTailPosition(snake);
 
     return snake;
+}
+
+var isSnakePlaying = function(snake) {
+    if (snake.body.length > 0) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 var getSnakeWithNewTailPosition = function(snake) {

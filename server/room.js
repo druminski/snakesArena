@@ -2,7 +2,7 @@ Meteor.startup(function () {
     Meteor.publish("createOrJoinToRoom", createOrJoinToRoom);
 });
 
-createOrJoinToRoom = function(roomId, playerName){[]
+createOrJoinToRoom = function(roomId, playerName){
     if (!isRoomExist(roomId)) {
         createRoom(roomId, playerName);
     }
@@ -98,7 +98,7 @@ var insertPlayerToRoom = function(roomId, playerName) {
         name : playerName,
         direction : DIRECTION.UP,
         newDirection: DIRECTION.UP,
-        lives: 5,
+        lives: 1,
         isSnakeInCollision: false,
         color: getRandomColorAsString(),
         body : [

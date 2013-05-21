@@ -48,10 +48,21 @@ var runGame = function(roomId) {
             handleTeleport(snakes);
             handleFruits(room, snakes);
             handleCollisions(snakes);
-            model.update({roomId : roomId}, {$set : {snakes : snakes, fruit : room.fruit}});
+            model.update({roomId : roomId}, {$set : {snakes : snakes, fruit : room.fruit, gameStatus : getGameStatus(snakes)}});
         }
 
     }, TIME_TO_WAIT_FOR_NEXT_ITERATION_IN_GAME);
+}
+
+var getGameStatus = function(snakes) {
+    var gameStatus = GAME_STATUS.END;
+    for (var index=0; index < snakes.length; index++) {
+        if (snakes[index].lives >= 0) {
+            gameStatus = GAME_STATUS.PLAYING;
+            break;
+        }
+    }
+    return gameStatus;
 }
 
 var isGameStatusEqualsEnd = function(roomId) {
@@ -61,6 +72,7 @@ var isGameStatusEqualsEnd = function(roomId) {
 
 var endGame = function(roomId, interval) {
     Meteor.clearInterval(interval);
+    Meteor._debug("ending game");
     //TODO winers and scores
 }
 

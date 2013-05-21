@@ -63,12 +63,18 @@ var observeRoom = function(roomId) {
     model.find({roomId: roomId}).observeChanges({
         changed: function (id, fields) {
             drawElementsOfTheGame(roomId);
+            setSnakesInSession(roomId);
         },
         added: function (id, fields) {
             Meteor._debug("Message from server (added): " + model.findOne({roomId : roomId}).snakes.length);
             drawElementsOfTheGame(roomId);
+            setSnakesInSession(roomId);
         }
     });
+}
+
+var setSnakesInSession = function(roomId) {
+    Session.set("snakes", model.findOne({roomId : roomId}).snakes);
 }
 
 var exitFromRoom = function() {
@@ -127,6 +133,10 @@ Template.arena.events({
         }
     }
 });
+
+Template.players.snakes = function () {
+    return Session.get("snakes")
+};
 
 Template.arena.arenaWidth = function() {
     return arenaWidth+"px";

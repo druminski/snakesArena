@@ -21,8 +21,10 @@ var drawSnakes = function(snakes){
     cleanArena();
 
     for (var snakeIndex=0; snakeIndex<snakes.length; snakeIndex++){
-        Meteor._debug("Pos: " + snakes[snakeIndex].body[snakes[snakeIndex].body.length-1].posX + "x" + snakes[snakeIndex].body[snakes[snakeIndex].body.length-1].posY + " size: " + snakes[snakeIndex].body.length + " direction: " + snakes[snakeIndex].direction +" lives: "+snakes[snakeIndex].lives+" color: " + snakes[snakeIndex].color);
-        drawSnake(context, snakes[snakeIndex].body, snakes[snakeIndex].color);
+        if (snakes[snakeIndex].body.length > 0) {
+            Meteor._debug("Pos: " + snakes[snakeIndex].body[snakes[snakeIndex].body.length-1].posX + "x" + snakes[snakeIndex].body[snakes[snakeIndex].body.length-1].posY + " size: " + snakes[snakeIndex].body.length + " direction: " + snakes[snakeIndex].direction +" lives: "+snakes[snakeIndex].lives+" color: " + snakes[snakeIndex].color);
+            drawSnake(context, snakes[snakeIndex].body, snakes[snakeIndex].color);
+        }
     }
 }
 

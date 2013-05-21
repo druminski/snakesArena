@@ -24,6 +24,12 @@
 
 </body>
 
+<template name="players">
+    {{#each snakes}}
+    <ul>{{name}} {{lives}}</ul>
+    {{/each}}
+</template>
+
 <template name="arena">
     <canvas id="snakesArena" width="{{arenaWidth}}" height="{{arenaHeight}}" tabindex="1"></canvas>
 </template>
@@ -36,6 +42,7 @@
                     <div class="brand pagination-centered">Room</div>
                 </div>
             </div>
+            {{> players}}
         </div>
     </div>
 </template>
