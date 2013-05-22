@@ -17,6 +17,7 @@ done kolory dla wezy
 done porozrzucac kod do plikow
 
 obsluzyc koniec zyc
+obsluzyc remove dla kolekcji po stronie klienta
 ograniczyc maksymalna ilosc graczy w pokoju
 punktcja
 urposcic funkcje sprawdzajaca czy punkt jest na linii

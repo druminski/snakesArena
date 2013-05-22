@@ -21,21 +21,23 @@ isRoomExist = function(roomId) {
 var publishRoomChanges = function(roomId, playerName, functionPublishRef) {
     var self = functionPublishRef;
     Meteor._debug("Observing room " + roomId);
+    var collectionNameOnClientSite = "model";
 
-    self.added("model", roomId, model.findOne({roomId : roomId}));
+    var document = model.findOne({roomId : roomId});
+    self.added(collectionNameOnClientSite, document._id, document);
     self.ready();
 
-    var observer = model.find({roomId : roomId}).observeChanges({
-        added: function (id, fields) {
+    var observer = model.find({roomId : roomId}).observe({
+        added: function (document) {
             Meteor._debug("Adding");
-            self.changed("model", roomId, model.findOne({roomId : roomId}));
+            self.added(collectionNameOnClientSite, document._id, document);
         },
-        changed: function (id, fields) {
-            self.changed("model", roomId, model.findOne({roomId : roomId}));
+        changed: function (newDocument, oldDocument) {
+            self.changed(collectionNameOnClientSite, newDocument._id, newDocument);
         },
-        removed: function (id) {
+        removed: function (oldDocument) {
             Meteor._debug("Removing");
-            self.changed("model", roomId, model.findOne({roomId : roomId}));
+            self.removed(collectionNameOnClientSite, oldDocument._id);
         }
     });
 

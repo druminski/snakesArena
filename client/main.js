@@ -60,21 +60,21 @@ var subscribeRoom = function(roomId, playerName) {
 }
 
 var observeRoom = function(roomId) {
-    model.find({roomId: roomId}).observeChanges({
-        changed: function (id, fields) {
-            drawElementsOfTheGame(roomId);
-            setSnakesInSession(roomId);
+    model.find({roomId: roomId}).observe({
+        changed: function (newDocument, oldDocument) {
+            drawElementsOfTheGame(newDocument);
+            setSnakesInSession(newDocument);
         },
-        added: function (id, fields) {
-            Meteor._debug("Message from server (added): " + model.findOne({roomId : roomId}).snakes.length);
-            drawElementsOfTheGame(roomId);
-            setSnakesInSession(roomId);
+        added: function (newDocument) {
+            Meteor._debug("Message from server (added): " + newDocument.snakes.length);
+            drawElementsOfTheGame(newDocument);
+            setSnakesInSession(newDocument);
         }
     });
 }
 
-var setSnakesInSession = function(roomId) {
-    Session.set("snakes", model.findOne({roomId : roomId}).snakes);
+var setSnakesInSession = function(room) {
+    Session.set("snakes", room.snakes);
 }
 
 var exitFromRoom = function() {

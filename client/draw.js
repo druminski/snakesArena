@@ -3,8 +3,7 @@ Meteor.startup(function () {
     context = canvas.getContext("2d");
 });
 
-drawElementsOfTheGame = function(roomId) {
-    var room = model.findOne({roomId : roomId});
+drawElementsOfTheGame = function(room) {
     drawSnakes(room.snakes);
     drawFruit(room.fruit.posX, room.fruit.posY);
 }
