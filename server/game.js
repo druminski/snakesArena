@@ -1,9 +1,12 @@
 model = new Meteor.Collection(); //collection without a name is not persisted!
 
+MAX_PLAYERS_IN_A_ROOM=8;
+
 Meteor.methods({
 
     startGameIfAdmin: function (roomId, playerName) {
-        if (ifGameStatusIsPauseAndAdminIsModifierThenChangeGameStatusToPlaying(roomId, playerName)) {
+        if (ifGameStatusIsEndAndAdminIsModifierThenChangeGameStatusToPlaying(roomId, playerName)) {
+            resetSnakesGameData(roomId);
             runGame(roomId);
         }
     },
@@ -26,9 +29,34 @@ Meteor.methods({
 
             Meteor._debug("updating");
         }
+    },
+
+    isRoomFree: function (roomId, playerName) {
+        var result = true;
+
+        var room = model.findOne({roomId : roomId});
+        if (room && room.snakes && room.snakes.length >= MAX_PLAYERS_IN_A_ROOM) {
+            result = false;
+        }
+        else if (room && room.snakes && room.snakes.length > 0 && !isPlayerNameUniqueForTheRoom(playerName, room.snakes)) {
+            result = NOT_UNIQE_NICK_NAME;
+        }
+
+        return result;
     }
 
 })
+
+var isPlayerNameUniqueForTheRoom = function(playerName, snakes) {
+    var result = true;
+    for (var index=0; index < snakes.length; index++) {
+        if (snakes[index].name === playerName) {
+            result = false;
+            break;
+        }
+    }
+    return result;
+}
 
 var runGame = function(roomId) {
     var TIME_TO_WAIT_FOR_NEXT_ITERATION_IN_GAME = 100;
@@ -47,8 +75,13 @@ var runGame = function(roomId) {
             moveSnakesPositions(snakes);
             handleTeleport(snakes);
             handleFruits(room, snakes);
-            handleCollisions(snakes);
-            model.update({roomId : roomId}, {$set : {snakes : snakes, fruit : room.fruit, gameStatus : getGameStatus(snakes)}});
+            handleCollisions(room, snakes);
+            model.update({roomId : roomId}, {$set : {
+                snakes : snakes,
+                info : room.info,
+                fruit : room.fruit,
+                gameStatus : getGameStatus(snakes)
+            }});
         }
 
     }, TIME_TO_WAIT_FOR_NEXT_ITERATION_IN_GAME);
@@ -57,7 +90,7 @@ var runGame = function(roomId) {
 var getGameStatus = function(snakes) {
     var gameStatus = GAME_STATUS.END;
     for (var index=0; index < snakes.length; index++) {
-        if (snakes[index].lives >= 0) {
+        if (snakes[index].status == GAME_STATUS.PLAYING) {
             gameStatus = GAME_STATUS.PLAYING;
             break;
         }
@@ -73,13 +106,17 @@ var isGameStatusEqualsEnd = function(roomId) {
 var endGame = function(roomId, interval) {
     Meteor.clearInterval(interval);
     Meteor._debug("ending game");
+    resetSnakesGameData(roomId);
     //TODO winers and scores
 }
 
-var ifGameStatusIsPauseAndAdminIsModifierThenChangeGameStatusToPlaying = function(roomId, playerName) {
+var ifGameStatusIsEndAndAdminIsModifierThenChangeGameStatusToPlaying = function(roomId, playerName) {
     var room = model.findOne({roomId : roomId});
-    if (room.roomAdmin == playerName && room.gameStatus == GAME_STATUS.PAUSE) {
-        model.update({roomId : roomId}, {$set : {gameStatus : GAME_STATUS.PLAYING}});
+    if (room.roomAdmin == playerName && room.gameStatus == GAME_STATUS.END) {
+        model.update({roomId : roomId}, {$set : {
+            gameStatus : GAME_STATUS.PLAYING,
+            snakes: getSnakesWithChangedStatus(room.snakes, GAME_STATUS.PLAYING)
+        }});
         Meteor._debug("playing")
         return true;
     }
@@ -87,3 +124,4 @@ var ifGameStatusIsPauseAndAdminIsModifierThenChangeGameStatusToPlaying = functio
         return false;
     }
 }
+

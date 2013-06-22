@@ -1,14 +1,16 @@
-model = new Meteor.Collection("model"); //collection without a name is not persisted!
+model = new Meteor.Collection("model");
 
-BLOCK_SIZE = 12;
+BLOCK_SIZE = 10;
 arenaWidth = MAX_ARENA_COLUMNS*BLOCK_SIZE;
 arenaHeight = MAX_ARENA_ROWS*BLOCK_SIZE;
 radiusForElelementAtArena = BLOCK_SIZE/2;
 
-var lblJoinToRoom = "Join to the game";
+var lblJoinToRoom = "Join to a room";
 var lblExitFromRoom = "Exit";
 
 var subscribeHandler;
+
+Session.set("desc", "Control by arrows");
 
 Template.room.events({
 
@@ -30,7 +32,17 @@ Template.room.events({
 
 var handleJoinToRoomOrExitFromRoom = function() {
     if ($('#btnJoinToRoom').attr('value') == lblJoinToRoom) {
-        joinToRoom();
+        Meteor.call('isRoomFree', getRoomId(), getPlayerName(), function (error, result) {
+            if (result === true) {
+                joinToRoom();
+            }
+            else if (result === false) {
+                Session.set("desc", "Sorry but the room is not free. Try again in a few minutes.");
+            }
+            else if (result === NOT_UNIQE_NICK_NAME){
+                Session.set("desc", "Please change your nickname because it is not unique.");
+            }
+        });
     } else {
         exitFromRoom();
     }
@@ -63,23 +75,25 @@ var observeRoom = function(roomId) {
     model.find({roomId: roomId}).observe({
         changed: function (newDocument, oldDocument) {
             drawElementsOfTheGame(newDocument);
-            setSnakesInSession(newDocument);
+            setSessionVariables(newDocument);
         },
         added: function (newDocument) {
             Meteor._debug("Message from server (added): " + newDocument.snakes.length);
             drawElementsOfTheGame(newDocument);
-            setSnakesInSession(newDocument);
+            setSessionVariables(newDocument);
         }
     });
 }
 
-var setSnakesInSession = function(room) {
+var setSessionVariables = function(room) {
     Session.set("snakes", room.snakes);
+    Session.set("desc", room.info);
 }
 
 var exitFromRoom = function() {
     modifyViewForExitFromRoom();
     subscribeHandler.stop();
+    Session.set("snakes", null);
 }
 
 var getPlayerName = function() {
@@ -136,6 +150,10 @@ Template.arena.events({
 
 Template.players.snakes = function () {
     return Session.get("snakes")
+};
+
+Template.desc.info = function() {
+    return Session.get("desc");
 };
 
 Template.arena.arenaWidth = function() {

@@ -8,26 +8,53 @@
     <div class="top">
         <div class="navbar">
             <div class="navbar-inner">
-                <div class="brand pagination-centered">Welcome to Snakes Arena</div>
+                <div class="brand pagination-centered">Welcome to Snakes Arena (alpha version)</div>
                 {{> room}}
             </div>
         </div>
     </div>
     <div class="content">
+        {{> desc}}
         {{> arena}}
+        <div class="footer">
+            <span class="label label-info"><a class="whiteLink" href="mailto:druminski@gmail.com" target="_blank">feedback</a></span>
+            <span class="label label-info"><a class="whiteLink" href="https://github.com/druminski/snakesArena" target="_blank">source</a></span>
+        </div>
     </div>
     {{> menus}}
-    <div class="footer">
-        Footer
-    </div>
 </div>
 
 </body>
 
 <template name="players">
-    {{#each snakes}}
-    <ul>{{name}} {{lives}}</ul>
-    {{/each}}
+    {{#if snakes}}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nickname</th>
+                <th>Lives</th>
+                <th>Points</th>
+                <!--<th>Status</th>-->
+            </tr>
+        </thead>
+        {{#each snakes}}
+        <tbody>
+            <tr>
+                <td><span class="label" style="background-color:rgb({{color}})">{{name}}</span></td>
+                <td>{{lives}}</td>
+                <td><span class="badge badge-success">{{points}}</span></td>
+                <!--<td>{{status}}</td>-->
+            </tr>
+        </tbody>
+        {{/each}}
+    </table>
+    {{/if}}
+</template>
+
+<template name="desc">
+    <div class="alert alert-info alertInfo">
+        {{info}}
+    </div>
 </template>
 
 <template name="arena">
@@ -50,7 +77,7 @@
 <template name="room">
     <div class="navbar-form pull-right">
         <input type="text" id="txtNickname" class="span2" placeholder="Type nickname">
-        <input type="submit" id="btnJoinToRoom" class="btn btn-primary" value="Join to the game">
+        <input type="submit" id="btnJoinToRoom" class="btn btn-primary" value="Join to a room">
         <input type="submit" id="btnReadyToPlay" class="btn btn-success disabled" value="Play">
     </div>
 </template>

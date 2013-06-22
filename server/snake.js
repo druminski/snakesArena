@@ -8,17 +8,20 @@ moveSnakesPositions = function(snakes) {
     }
 }
 
-handleCollisions = function(snakes) {
+handleCollisions = function(room, snakes) {
     for (var snakeIndex=0; snakeIndex < snakes.length; snakeIndex++) {
         if (isSnakePlaying(snakes[snakeIndex])) {
             snakes[snakeIndex].isSnakeInCollision = isSnakeInCollision(snakeIndex, snakes);
         }
     }
 
+    var info = "";
     for (var snakeIndex=0; snakeIndex < snakes.length; snakeIndex++) {
         if (snakes[snakeIndex].isSnakeInCollision) {
             Meteor._debug("collision");
             snakes[snakeIndex] = getSnakeWithHandledCollision(snakes[snakeIndex], snakeIndex);
+            info += snakes[snakeIndex].name + " lost life ";
+            room.info = info;
         }
     }
 }
@@ -39,8 +42,10 @@ handleFruits = function(room, snakes) {
         if (isSnakePlaying(snakes[snakeIndex]) && isSnakeEatingFruit(snakes[snakeIndex], room.fruit)) {
             var howManyElementsAddToTail = 3;
             Meteor._debug("fruit");
+            snakes[snakeIndex].points += howManySnakesArePlaying(snakes)*2;
             snakes[snakeIndex] = getSnakeWithMovedTailPosition(snakes[snakeIndex], howManyElementsAddToTail);
             fruitWasEaten = true;
+            room.info =  snakes[snakeIndex].name + " ate a fruit.";
         }
     }
 
@@ -62,6 +67,13 @@ isOppositeDirection = function(direction1, direction2) {
     }
 }
 
+getSnakesWithChangedStatus = function (snakes, status) {
+    for(var index=0; index < snakes.length; index++) {
+        snakes[index].status = status;
+    }
+    return snakes
+}
+
 var isSnakeEatingFruit = function(snake, fruit) {
     if (getHead(snake.body).posX == fruit.posX && getHead(snake.body).posY == fruit.posY ) {
         return true;
@@ -77,10 +89,12 @@ var getSnakeWithHandledCollision = function(snake, snakeIndex) {
     snake.direction = DIRECTION.UP;
     snake.newDirection = DIRECTION.UP;
     snake.body.length = 0;
-    if (snake.lives > 0) {
-        snake.body.push(
-            {posX : snakeIndex*DISTANCE_BETWEEN_SNAKES_AT_START + DISTANCE_BETWEEN_SNAKES_AT_START, posY : 28},
-            {posX : snakeIndex*DISTANCE_BETWEEN_SNAKES_AT_START + DISTANCE_BETWEEN_SNAKES_AT_START, posY : 20});
+    snake.body.push(
+        {posX : snakeIndex*DISTANCE_BETWEEN_SNAKES_AT_START + DISTANCE_BETWEEN_SNAKES_AT_START, posY : 28},
+        {posX : snakeIndex*DISTANCE_BETWEEN_SNAKES_AT_START + DISTANCE_BETWEEN_SNAKES_AT_START, posY : 20});
+
+    if (snake.lives <= 0) {
+        snake.status = GAME_STATUS.END;
     }
 
     return snake;
@@ -120,14 +134,16 @@ var isSnakeHittingIntoWall = function(snakeHead) {
 var isSnakeInCollision = function(verifiedSnakeIndex, snakes) {
     var head = getHead(snakes[verifiedSnakeIndex].body);
     for (var snakeIndex=0; snakeIndex < snakes.length; snakeIndex++) {
-        var body = snakes[snakeIndex].body;
-        var endIndex = body.length;
-        if (verifiedSnakeIndex == snakeIndex) {
-            endIndex--;
-        }
-        for (var bodyIndex=1; bodyIndex < endIndex; bodyIndex++) {
-            if (!isPointOutOfArea(body[bodyIndex]) && isPointOnSegment(body[bodyIndex-1], body[bodyIndex], head)) {
-                return true;
+        if (isSnakePlaying(snakes[snakeIndex])){
+            var body = snakes[snakeIndex].body;
+            var endIndex = body.length;
+            if (verifiedSnakeIndex == snakeIndex) {
+                endIndex--;
+            }
+            for (var bodyIndex=1; bodyIndex < endIndex; bodyIndex++) {
+                if (!isPointOutOfArea(body[bodyIndex]) && isPointOnSegment(body[bodyIndex-1], body[bodyIndex], head)) {
+                    return true;
+                }
             }
         }
     }
@@ -206,7 +222,7 @@ var getSnakeWithNewPosition = function(snake) {
 }
 
 var isSnakePlaying = function(snake) {
-    if (snake.body.length > 0) {
+    if (snake.status == GAME_STATUS.PLAYING) {
         return true;
     }
     else {
@@ -273,4 +289,14 @@ var isPointOnSegment = function(pointA, pointB, pointP) {
         }
     }
     return false;
+}
+
+var howManySnakesArePlaying = function(snakes) {
+    var howManyPlayersArePlaying = 0;
+    for(var index=0; index < snakes.length; index++) {
+        if (snakes[index].status == GAME_STATUS.PLAYING) {
+            howManyPlayersArePlaying++;
+        }
+    }
+    return howManyPlayersArePlaying;
 }

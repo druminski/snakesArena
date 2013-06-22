@@ -18,6 +18,14 @@ isRoomExist = function(roomId) {
     return roomExist;
 }
 
+resetSnakesGameData = function (roomId){
+    var snakes = model.findOne({roomId : roomId}).snakes;
+    for (var index = 0; index < snakes.length; index++) {
+        snakes[index] = getSnakeWithResetData(snakes[index]);
+    }
+    model.update({roomId : roomId}, {$set: {snakes : snakes}});
+}
+
 var publishRoomChanges = function(roomId, playerName, functionPublishRef) {
     var self = functionPublishRef;
     Meteor._debug("Observing room " + roomId);
@@ -77,7 +85,8 @@ var createRoom = function(roomId, adminName) {
     model.insert({
         roomId : roomId,
         roomAdmin : adminName,
-        gameStatus : GAME_STATUS.PAUSE,
+        gameStatus : GAME_STATUS.END,
+        info : "Control by arrows",
         fruit : getRandomPosition(MAX_ARENA_COLUMNS, MAX_ARENA_ROWS),
         snakes : [
         ]
@@ -95,19 +104,26 @@ var removeRoom = function(roomId) {
 var insertPlayerToRoom = function(roomId, playerName) {
     var howManySnakesInTheRoomWithNewSnake = howManyPlayersInRoom(roomId) + 1;
     Meteor._debug("Number of snakes in the room " + howManySnakesInTheRoomWithNewSnake);
-    model.update({roomId : roomId}, {$push: {snakes :
-    {
+
+    var snake = {
         name : playerName,
-        direction : DIRECTION.UP,
-        newDirection: DIRECTION.UP,
-        lives: 1,
-        isSnakeInCollision: false,
         color: getRandomColorAsString(),
         body : [
             {posX : howManySnakesInTheRoomWithNewSnake*DISTANCE_BETWEEN_SNAKES_AT_START + DISTANCE_BETWEEN_SNAKES_AT_START, posY : 28},
             {posX : howManySnakesInTheRoomWithNewSnake*DISTANCE_BETWEEN_SNAKES_AT_START + DISTANCE_BETWEEN_SNAKES_AT_START, posY : 20}
         ]
     }
+    snake = getSnakeWithResetData(snake);
+    model.update({roomId : roomId}, {$push: {snakes : snake}});
+}
 
-    }});
+var getSnakeWithResetData = function (snake) {
+    snake.lives = 5;
+    snake.direction = DIRECTION.UP;
+    snake.newDirection = DIRECTION.UP;
+    snake.points = 0;
+    snake.status = GAME_STATUS.PLAYING;
+    snake.isSnakeInCollision = false;
+
+    return snake;
 }

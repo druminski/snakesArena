@@ -15,20 +15,23 @@ done kolizje
 done owoce
 done kolory dla wezy
 done porozrzucac kod do plikow
+done dodac panel informacyjny
+done obsluzyc koniec zyc
+done ograniczyc maksymalna ilosc graczy w pokoju
+done punktcja
+done unikalne nazwy uzytkownikow w pokoju
 
-obsluzyc koniec zyc
-obsluzyc remove dla kolekcji po stronie klienta
-ograniczyc maksymalna ilosc graczy w pokoju
-punktcja
+tylko admin powinien widziec przycisk play
+lista rekordów
+poprawic reconnect
+dodac item dajacy speeda * 2
 urposcic funkcje sprawdzajaca czy punkt jest na linii
-dodac panel informacyjny
 baner http://madewith.meteor.com/
-formularz do zakładania pokoi
 link do zaproszenia znajomego do pokoju
 wylaczyc debug
-unikalne nazwy uzytkownikow, albo uwiezytelnianie?
+formularz do zakładania pokoi
 
 //BUGS
-gdy klient wiele razy utworzy pokoj i go opusci, to gra zaczyna przycinac, a procek sie zazyna - zdebugowac kolekcje
+done gdy klient wiele razy utworzy pokoj i go opusci, to gra zaczyna przycinac, a procek sie zazyna - zdebugowac kolekcje
 waz nie powinien moc zjesc wlasnego ogona
 TypeError: Cannot read property 'snakes' of undefined - kiedy user wyjdzie, a iteracja bedzie w trakcie wykonywania - weryfikowac czy zostal znaleziony dokument?

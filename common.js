@@ -1,7 +1,7 @@
 GAME_STATUS = {
-    PAUSE : "pause",
-    PLAYING: "playing",
-    END : "end"
+    END : "end",
+    WAITING : "waiting",
+    PLAYING: "playing"
 };
 
 DIRECTION = {
@@ -11,8 +11,10 @@ DIRECTION = {
     LEFT : "left"
 };
 
-MAX_ARENA_COLUMNS = 50;
-MAX_ARENA_ROWS = 30;
+MAX_ARENA_COLUMNS = 80;
+MAX_ARENA_ROWS = 50;
+
+NOT_UNIQE_NICK_NAME = "notUniqueNickname";
 
 getHead = function (body){
     return body[body.length-1];

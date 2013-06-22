@@ -6,10 +6,12 @@ body {
     margin: 0;
     padding: 0;
     height: 100%;
+    text-align: center;
+    background: url("/grass.jpg");
 }
 
 #snakesArena {
-    background-color: #D6DFb2;
+    background-color: #cdf95c;
     border: 1px solid #D4D4D4;
     border-radius: 4px;
     float: left;
@@ -34,9 +36,14 @@ input[type="submit"]#btnJoinToRoom {
 }
 
 .menus {
-    border: 1px solid #D4D4D4;
+    /*border: 1px solid #D4D4D4;*/
     border-radius: 4px;
-    padding-left: 5px;
+    padding-left: 20px;
+}
+
+.menu {
+    border-radius: 4px;
+    background-color: white;
 }
 
 .border {
@@ -44,17 +51,26 @@ input[type="submit"]#btnJoinToRoom {
 }
 
 .container {
-    width: 80%;
-    margin: 0 auto;
+    display: inline-block;
+    padding-bottom: 0;
+    padding-top: 0;
 }
 
 .content {
     float: left;
 }
 
+.alertInfo {
+    margin: 0px 0px 20px 0px;
+}
+
 .footer {
-    width: 100%;
-    float : left;
+    margin: 0 auto;
+}
+
+a.whiteLink {
+    color: white;
+    text-decoration: none;
 }
 
 .navbar-innermy {
