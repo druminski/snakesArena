@@ -9,7 +9,7 @@
         <div class="navbar">
             <div class="navbar-inner">
                 <div class="brand pagination-centered">Welcome to Snakes Arena (alpha version)</div>
-                {{> room}}
+                {{> joinToRoom}}
             </div>
         </div>
     </div>
@@ -26,7 +26,7 @@
 
 </body>
 
-<template name="players">
+<template name="room">
     {{#if snakes}}
     <table class="table">
         <thead>
@@ -40,7 +40,9 @@
         {{#each snakes}}
         <tbody>
             <tr>
-                <td><span class="label" style="background-color:rgb({{color}})">{{name}}</span></td>
+                <td><span class="label" style="background-color:rgb({{color}})">{{name}}</span>
+                    {{#if equals name admin}} (admin){{/if}}
+                </td>
                 <td>{{lives}}</td>
                 <td><span class="badge badge-success">{{points}}</span></td>
                 <!--<td>{{status}}</td>-->
@@ -48,6 +50,9 @@
         </tbody>
         {{/each}}
     </table>
+        {{#if equals myName admin}}
+        <input type="submit" id="btnReadyToPlay" class="btn btn-success" value="Play">
+        {{/if}}
     {{/if}}
 </template>
 
@@ -69,15 +74,14 @@
                     <div class="brand pagination-centered">Room</div>
                 </div>
             </div>
-            {{> players}}
+            {{> room}}
         </div>
     </div>
 </template>
 
-<template name="room">
+<template name="joinToRoom">
     <div class="navbar-form pull-right">
         <input type="text" id="txtNickname" class="span2" placeholder="Type nickname">
         <input type="submit" id="btnJoinToRoom" class="btn btn-primary" value="Join to a room">
-        <input type="submit" id="btnReadyToPlay" class="btn btn-success disabled" value="Play">
     </div>
 </template>

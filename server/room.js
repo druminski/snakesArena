@@ -69,6 +69,31 @@ var exitUserFromRoom = function(roomId, playerName, observer) {
         Meteor._debug("Removing room " + roomId);
         removeRoom(roomId);
     }
+    else {
+        changeAdminIfNecessary(roomId);
+    }
+}
+
+var changeAdminIfNecessary = function(roomId) {
+    var room = model.findOne({roomId : roomId});
+
+    if (!isAdminExist(room)) {
+        model.update({roomId : roomId}, {$set : {roomAdmin : room.snakes[0].name}});
+    }
+}
+
+var isAdminExist = function(room) {
+    var snakes = room.snakes;
+    var adminName = room.roomAdmin;
+
+    var adminExist = false;
+    for (var index=0; index < snakes.length; index++) {
+        if (snakes[index].name === adminName) {
+            adminExist = true;
+            break;
+        }
+    }
+    return adminExist;
 }
 
 var howManyPlayersInRoom = function(roomId) {

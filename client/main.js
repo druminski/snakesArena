@@ -12,7 +12,7 @@ var subscribeHandler;
 
 Session.set("desc", "Control by arrows");
 
-Template.room.events({
+Template.joinToRoom.events({
 
     'click #btnJoinToRoom':function(){
         handleJoinToRoomOrExitFromRoom();
@@ -22,12 +22,13 @@ Template.room.events({
         if (event.keyCode == 13) {                  //when press enter
             handleJoinToRoomOrExitFromRoom();
         }
-    },
+    }
+});
 
+Template.room.events({
     'click #btnReadyToPlay':function(){
         startGameIfAdmin();
     }
-
 });
 
 var handleJoinToRoomOrExitFromRoom = function() {
@@ -88,12 +89,15 @@ var observeRoom = function(roomId) {
 var setSessionVariables = function(room) {
     Session.set("snakes", room.snakes);
     Session.set("desc", room.info);
+    Session.set("admin", room.roomAdmin);
+    Session.set("name", getPlayerName());
 }
 
 var exitFromRoom = function() {
     modifyViewForExitFromRoom();
     subscribeHandler.stop();
     Session.set("snakes", null);
+    Session.set("name", null);
 }
 
 var getPlayerName = function() {
@@ -148,8 +152,16 @@ Template.arena.events({
     }
 });
 
-Template.players.snakes = function () {
-    return Session.get("snakes")
+Template.room.snakes = function () {
+    return Session.get("snakes");
+};
+
+Template.room.admin = function () {
+    return Session.get("admin");
+};
+
+Template.room.myName = function () {
+    return Session.get("name");
 };
 
 Template.desc.info = function() {
@@ -167,3 +179,12 @@ Template.arena.arenaHeight = function() {
 Template.menus.menusStyle = function() {
     return "margin-left:"+arenaWidth+"px";
 }
+
+Template.room.equals = function (v1, v2) {
+    if (v1 === v2) {
+        return true;
+    }
+    else {
+        return false;
+    }
+};
